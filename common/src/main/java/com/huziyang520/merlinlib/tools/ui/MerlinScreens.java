@@ -10,8 +10,12 @@ public final class MerlinScreens {
     }
 
     public static void openConfigScreen(Screen parent) {
-        if (!ConfigScreens.open(parent)) {
-            Minecraft.getInstance().player.sendSystemMessage(
+        if (ConfigScreens.open(parent)) {
+            return;
+        }
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.player != null) {
+            minecraft.player.sendSystemMessage(
                     net.minecraft.network.chat.Component.translatable("message.merlinlib.config.needs_screen"));
         }
     }
