@@ -13,8 +13,9 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 public class MerlinLibFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        MezzConfigBridge.install();
-        FabricConfig.install();
+        if (!FabricConfig.install()) {
+            MezzConfigBridge.install();
+        }
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, buildContext) -> dispatcher.register(
                 ClientCommands.literal(Constants.MOD_ID)
