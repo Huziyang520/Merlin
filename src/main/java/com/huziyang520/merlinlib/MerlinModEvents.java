@@ -16,12 +16,6 @@ public final class MerlinModEvents {
 
     @SubscribeEvent
     public static void onBuildCreativeTab(BuildCreativeModeTabContentsEvent event) {
-        if (MerlinCreativeEntries.TOOLS_TAB.equals(event.getTabKey())) {
-            for (ItemStack stack : MerlinCreativeEntries.testWeapons()) {
-                addOnce(event, stack);
-            }
-            return;
-        }
         if (MerlinCreativeEntries.TAB.equals(event.getTabKey())) {
             for (ItemStack stack : MerlinCreativeEntries.enchantedBooks()) {
                 addOnce(event, stack);

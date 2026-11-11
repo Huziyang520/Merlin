@@ -5,14 +5,11 @@ package com.huziyang520.merlinlib.command;
 import com.huziyang520.merlinlib.api.EnchantmentInfo;
 import com.huziyang520.merlinlib.api.MerlinApi;
 import com.huziyang520.merlinlib.config.ConfigDirectory;
-import com.huziyang520.merlinlib.config.ConfigManager;
 import com.huziyang520.merlinlib.config.ContentSnapshot;
 import com.huziyang520.merlinlib.content.EnchantmentDraft;
 import com.huziyang520.merlinlib.impl.ContentManager;
 import com.huziyang520.merlinlib.impl.IdValidator;
 import com.huziyang520.merlinlib.impl.PermissionGate;
-import com.huziyang520.merlinlib.network.OpenToolPayload;
-import com.huziyang520.merlinlib.network.ServerSender;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -47,14 +44,6 @@ public final class MerlinCommand {
                 .then(Commands.literal("info")
                         .then(Commands.argument("id", StringArgumentType.string())
                                 .executes(MerlinCommand::info)))
-                .then(Commands.literal("editor")
-                        .executes(context -> openTool(context, OpenToolPayload.EDITOR)))
-                .then(Commands.literal("health")
-                        .executes(context -> openTool(context, OpenToolPayload.HEALTH)))
-                .then(Commands.literal("macro")
-                        .executes(context -> openTool(context, OpenToolPayload.MACRO)))
-                .then(Commands.literal("notices")
-                        .executes(context -> openTool(context, OpenToolPayload.NOTICES)))
                 .then(Commands.literal("book")
                         .requires(MerlinCommand::mayManage)
                         .then(Commands.argument("id", StringArgumentType.string())
@@ -68,42 +57,7 @@ public final class MerlinCommand {
                                                 .executes(context -> LayerCommand.apply(context.getSource(),
                                                         StringArgumentType.getString(context, "effect"),
                                                         IntegerArgumentType.getInteger(context, "layers"),
-                                                        IntegerArgumentType.getInteger(context, "seconds")))))))
-                .then(Commands.literal("editorhotkey")
-                        .requires(MerlinCommand::mayManage)
-                        .then(Commands.literal("on")
-                                .executes(context -> setEditorHotkey(context, true)))
-                        .then(Commands.literal("off")
-                                .executes(context -> setEditorHotkey(context, false)))));
-    }
-
-    private static int openTool(CommandContext<CommandSourceStack> context, int tool) {
-        CommandSourceStack source = context.getSource();
-        ServerPlayer player = source.getPlayer();
-        if (player == null) {
-            source.sendFailure(Component.translatable("command.merlinlib.player_only"));
-            return 0;
-        }
-        boolean allowed = switch (tool) {
-            case OpenToolPayload.EDITOR -> PermissionGate.canOpenEditor(player);
-            case OpenToolPayload.HEALTH -> PermissionGate.canOpenHealthEditor(player);
-            case OpenToolPayload.NOTICES -> PermissionGate.canUseTools(player);
-            default -> PermissionGate.canUseTools(player);
-        };
-        if (!allowed) {
-            source.sendFailure(Component.translatable("message.merlinlib.no_permission"));
-            return 0;
-        }
-        ServerSender.sendToPlayer(player, new OpenToolPayload(tool));
-        return 1;
-    }
-
-    private static int setEditorHotkey(CommandContext<CommandSourceStack> context, boolean enabled) {
-        ConfigManager.saveClient(java.util.Map.of("editor.hotkey_enabled", Boolean.toString(enabled)));
-        context.getSource().sendSuccess(() -> Component.translatable(enabled
-                ? "command.merlinlib.editorhotkey.on"
-                : "command.merlinlib.editorhotkey.off"), false);
-        return 1;
+                                                        IntegerArgumentType.getInteger(context, "seconds"))))))));
     }
 
     private static boolean mayManage(CommandSourceStack source) {

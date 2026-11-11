@@ -10,8 +10,6 @@ import com.huziyang520.merlinlib.loot.LootInjector;
 import com.huziyang520.merlinlib.mixin.RangedAttributeAccessor;
 import com.huziyang520.merlinlib.notice.NoticeManager;
 import com.huziyang520.merlinlib.platform.Services;
-import com.huziyang520.merlinlib.tools.HealthEditorItem;
-import com.huziyang520.merlinlib.tools.TestWeapons;
 import com.huziyang520.merlinlib.util.SmeltingLookup;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -39,7 +37,6 @@ public class MerlinLibForge {
         Services.LOOT.bootstrap(modBus);
         LootInjector.install();
         NoticeManager.install();
-        com.huziyang520.merlinlib.network.ServerSender.register();
         com.huziyang520.merlinlib.reload.ContentReloadListener.install();
         ConfigManager.reload();
         com.huziyang520.merlinlib.config.NoticeSettings.init();
@@ -47,8 +44,6 @@ public class MerlinLibForge {
         widenAttributeCeilings();
         MerlinApi.lifecycle().onServerStarting(SmeltingLookup::initialize);
         BuiltInContent.register();
-        TestWeapons.register();
-        HealthEditorItem.register();
         ContentManager.refresh();
     }
 
