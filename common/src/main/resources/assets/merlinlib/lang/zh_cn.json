@@ -82,5 +82,7 @@
   "command.merlinlib.layers.unknown": "没有名为 %s 的分层效果",
   "command.merlinlib.layers.player_only": "只能由玩家执行",
   "merlinlib.configuration.notices.open": "进世界通知…",
-  "merlinlib.configuration.notices.open.tooltip": "哪些模组可以发送进世界通知"
+  "merlinlib.configuration.notices.open.tooltip": "哪些模组可以发送进世界通知",
+  "enchantment.merlinlib.unbreakable": "无法破坏",
+  "enchantment.merlinlib.unbreakable.desc": "锁定物品耐久。首次将要受损时会被完全修复，此后不再消耗耐久。"
 }

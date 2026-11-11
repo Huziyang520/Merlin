@@ -82,5 +82,7 @@
   "command.merlinlib.layers.unknown": "No layered effect registered as %s",
   "command.merlinlib.layers.player_only": "Run this as a player",
   "merlinlib.configuration.notices.open": "Join notice…",
-  "merlinlib.configuration.notices.open.tooltip": "Which mods may send a join notice"
+  "merlinlib.configuration.notices.open.tooltip": "Which mods may send a join notice",
+  "enchantment.merlinlib.unbreakable": "Unbreakable",
+  "enchantment.merlinlib.unbreakable.desc": "Locks the durability of an item. The first time it would be damaged it is repaired fully, and after that it never wears out."
 }

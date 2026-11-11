@@ -3,7 +3,7 @@
 [English](#english) | [中文](#中文)
 
 > The Java API: three registration lines and the hooks around them.
-> For the files and commands see [`USAGE.md`](USAGE.md); for the toolkit see [`TOOLKIT.md`](TOOLKIT.md).
+> For the files and commands see [`USAGE.md`](USAGE.md).
 
 ---
 
@@ -192,9 +192,8 @@ MerlinApi.ai().register(new AiHook() {
 
 ### Interface animation
 
-The curves and the intro are a public API. MerlinLib itself no longer animates its screens with them -
-the configuration screen belongs to the loader and the toolkit screens open at once - so a mod that
-wants the same feel drives them itself:
+The curves and the intro are a public API. MerlinLib itself does not animate its own window with them —
+the configuration screen belongs to the loader — so a mod that wants the same feel drives them itself:
 
 ```java
 ScreenIntro intro = UiAnimation.intro();          // SCALE_POP unless the mod asks for another kind
@@ -206,7 +205,7 @@ ScreenIntro intro = UiAnimation.intro();          // SCALE_POP unless the mod as
 - `UiAnimation` hands out those values; nothing in it reads a configuration file, so a mod keeps its own
   switch instead of inheriting one.
 
-es not touch another mod's screens.
+Nothing here touches another mod's screens.
 
 ### Colours, counters and lookups
 
@@ -352,7 +351,7 @@ MerlinApi.lifecycle().onServerStarted(server -> MyEnchantments.bind(server));
 
 ### 界面动画
 
-曲线与入场动画是公开 API。MerlinLib 自己不再拿它们做动画——配置界面归加载器，工具界面直接出现——
+曲线与入场动画是公开 API。MerlinLib 自己不用它们给窗口做动画——配置界面归加载器——
 想要同样手感的模组自己驱动：
 
 ```java
