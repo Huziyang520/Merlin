@@ -15,8 +15,8 @@ authors="${mod_author}"
 credits="${credits}"
 description="${description}"
 logoFile="${mod_id}.png"
-displayURL="https://www.curseforge.com/minecraft/mc-mods/merlinlib"
-issueTrackerURL="https://github.com/Huziyang520/MerlinLib/issues"
+displayURL="https://github.com/Huziyang520/Merlin"
+issueTrackerURL="https://github.com/Huziyang520/Merlin/issues"
 
 [[dependencies.${mod_id}]]
     modId="forge"
