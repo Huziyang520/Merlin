@@ -10,8 +10,8 @@ version = "${version}" #mandatory
 displayName = "${mod_name}" #mandatory
 # displayURL / issueTrackerURL / icon fields MUST stay inside the [[mods]] table, otherwise the mod
 # list shows no homepage / issue button / icon at all.
-displayURL = "https://www.curseforge.com/minecraft/mc-mods/merlinlib" #optional (displayed in the mod UI)
-issueTrackerURL = "https://github.com/Huziyang520/MerlinLib/issues" #optional
+displayURL = "https://github.com/Huziyang520/Merlin" #optional (displayed in the mod UI)
+issueTrackerURL = "https://github.com/Huziyang520/Merlin/issues" #optional
 # The icon field moved across versions: 26.1.2 only reads logoFile, 26.2+ reads iconFile (logoFile is
 # deprecated there). One jar has to cover both, so both are declared.
 logoFile = "${mod_id}.png" #optional

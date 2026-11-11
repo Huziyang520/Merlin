@@ -8,8 +8,8 @@
         "${mod_author}"
     ],
     "contact": {
-        "homepage": "https://www.curseforge.com/minecraft/mc-mods/merlinlib",
-        "issues": "https://github.com/Huziyang520/MerlinLib/issues"
+        "homepage": "https://github.com/Huziyang520/Merlin",
+        "issues": "https://github.com/Huziyang520/Merlin/issues"
     },
     "license": "${license}",
     "icon": "${mod_id}.png",

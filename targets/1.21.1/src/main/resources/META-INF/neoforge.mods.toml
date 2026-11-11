@@ -22,8 +22,8 @@ description = '''${mod_description}'''
 # displayURL / issueTrackerURL / logoFile must stay inside the [[mods]] table, otherwise the mod
 # list shows no homepage / issue button / icon at all.
 logoFile = "${mod_id}.png"
-displayURL = "https://www.curseforge.com/minecraft/mc-mods/merlinlib"
-issueTrackerURL = "https://github.com/Huziyang520/MerlinLib/issues"
+displayURL = "https://github.com/Huziyang520/Merlin"
+issueTrackerURL = "https://github.com/Huziyang520/Merlin/issues"
 
 [[mixins]]
 config = "${mod_id}.mixins.json"
