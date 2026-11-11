@@ -6,8 +6,6 @@ import com.huziyang520.merlinlib.config.ConfigManager;
 import com.huziyang520.merlinlib.config.NoticeSettings;
 import com.huziyang520.merlinlib.content.BuiltInContent;
 import com.huziyang520.merlinlib.impl.ContentManager;
-import com.huziyang520.merlinlib.tools.HealthEditorItem;
-import com.huziyang520.merlinlib.tools.TestWeapons;
 import com.huziyang520.merlinlib.mixin.RangedAttributeAccessor;
 import com.huziyang520.merlinlib.api.MerlinApi;
 import com.huziyang520.merlinlib.api.NoticeMode;
@@ -77,8 +75,6 @@ public class MerlinLib {
         widenAttributeCeilings();
         MerlinApi.lifecycle().onServerStarting(SmeltingLookup::initialize);
         BuiltInContent.register();
-        TestWeapons.register();
-        HealthEditorItem.register();
         ContentManager.refresh();
     }
 

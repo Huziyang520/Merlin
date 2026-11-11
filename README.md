@@ -6,20 +6,20 @@
 
 ## English
 
-MerlinLib is a Minecraft **library mod**: it gives mod authors three registration lines — **enchantments,
-effects and potions** — and ships a ready-to-use testing toolkit on top of them.
+MerlinLib is a Minecraft **library mod** for mod authors: it gives you three registration lines —
+**enchantments, effects and potions** — plus the parts every content mod ends up needing anyway:
+enchantment events, loot injection, join notices, a server lifecycle and mob behaviour hooks.
 
 - Sides: **client and server** — it must be installed on both
 - Author: Huziyang520 · Licence: **CC0 1.0**
-- Repository: <https://github.com/Huziyang520/MerlinLib> · Issues: <https://issue.mengcai.online/>
+- Repository: <https://github.com/Huziyang520/Merlin> · Issues: <https://github.com/Huziyang520/Merlin/issues>
 
 ### Supported versions
 
 | Branch | Minecraft | Loader |
 |---|---|---|
-| [`master`](https://github.com/Huziyang520/MerlinLib/tree/master) | 26.X | NeoForge, Fabric |
-| [`master`](https://github.com/Huziyang520/MerlinLib/tree/master) | 1.21.1 | NeoForge |
-| [`1.20.1`](https://github.com/Huziyang520/MerlinLib/tree/1.20.1) | 1.20.1 | Forge |
+| [`master`](https://github.com/Huziyang520/Merlin/tree/master) | 26.X | NeoForge, Fabric |
+| [`1.20.1`](https://github.com/Huziyang520/Merlin/tree/1.20.1) | 1.20.1 | Forge |
 
 A branch that covers a range of game versions ships one jar for the whole range.
 
@@ -40,20 +40,8 @@ Everything is reached through one entry point, `com.huziyang520.merlinlib.api.Me
 | **Interface animation** | opening curves and an intro a mod can drive its own screens with |
 | **Colours and helpers** | colour parsing and gradients, grant counters, smelting lookups |
 
-The library is **client side too**: the toolkit and every display feature live in
-the same jar, so a mod that only wants the registration API still installs one file.
-
-### What it ships as content
-
-- **Testing toolkit** — four testing weapons (sword, axe, spear, trident) that are editable variants of
-  the vanilla ones, an item editor, a health editor, command macros, crosshair damage and floating
-  damage numbers. Every part of it can be switched off, and it can be limited to operators.
-- **A configuration screen** — the loader's own where there is one: NeoForge builds it from the declared
-  switches, while Forge and Fabric draw it with **Cloth Config**, **Jupiter** or **MezzConfig**, whichever
-  is installed. All of them are optional; without them the switches are still in the files and reachable
-  through the commands.
-- **A vanilla-UI base** — `tools.ui.vanilla.VanillaUi` and the screens built on it use the vanilla
-  widget sprites only, and other mods may reuse them.
+The library is **client side too**: its configuration screen and the join notice page live in the same
+jar, so a mod that only wants the registration API still installs one file.
 
 ### Documentation
 
@@ -61,7 +49,6 @@ the same jar, so a mod that only wants the registration API still installs one f
 |---|---|
 | [`docs/USAGE.md`](docs/USAGE.md) | the config files, the commands, where the configuration screen comes from |
 | [`docs/DEV.md`](docs/DEV.md) | the Java API, and how to depend on MerlinLib |
-| [`docs/TOOLKIT.md`](docs/TOOLKIT.md) | the testing toolkit in detail |
 | [`docs/LIMITS.md`](docs/LIMITS.md) | what a configuration file can and cannot do |
 
 ### Licence
@@ -77,19 +64,18 @@ Copyright (c) 2026 Huziyang520
 ## 中文
 
 MerlinLib 是一款 Minecraft **前置库模组**：为模组开发者提供**附魔 / 效果 / 药水**三条注册主线，
-并内置一套开箱即用的测试工具集。
+外加内容模组迟早都要用到的部分：附魔事件、战利品注入、进服提示、服务器生命周期与生物行为挂钩。
 
 - 部署属性：**客户端 + 服务端模组**，两端都必须安装
 - 作者：Huziyang520 · 许可证：**CC0 1.0**
-- 仓库：<https://github.com/Huziyang520/MerlinLib> · 问题反馈：<https://issue.mengcai.online/>
+- 仓库：<https://github.com/Huziyang520/Merlin> · 问题反馈：<https://github.com/Huziyang520/Merlin/issues>
 
 ### 支持版本
 
 | 分支 | Minecraft | 加载器 |
 |---|---|---|
-| [`master`](https://github.com/Huziyang520/MerlinLib/tree/master) | 26.X | NeoForge, Fabric |
-| [`master`](https://github.com/Huziyang520/MerlinLib/tree/master) | 1.21.1 | NeoForge |
-| [`1.20.1`](https://github.com/Huziyang520/MerlinLib/tree/1.20.1) | 1.20.1 | Forge |
+| [`master`](https://github.com/Huziyang520/Merlin/tree/master) | 26.X | NeoForge, Fabric |
+| [`1.20.1`](https://github.com/Huziyang520/Merlin/tree/1.20.1) | 1.20.1 | Forge |
 
 覆盖一段游戏版本的分支，为整段版本提供同一个 jar。
 
@@ -110,17 +96,7 @@ MerlinLib 是一款 Minecraft **前置库模组**：为模组开发者提供**�
 | **界面动画** | 库自己的界面带动画，任何模组都能拿到同一套曲线与入场动画 |
 | **颜色与工具** | 颜色解析与渐变、授予记账、熔炼查询 |
 
-本库**同时也是客户端模组**：测试工具与全部显示功能都在同一个 jar 里，所以只想要注册 API 的
-模组也只装一个文件。
-
-### 内置内容模块
-
-- **测试工具集**——四件测试武器（剑 / 斧 / 矛 / 三叉戟，原版武器的可编辑变体）、物品编辑界面、血量编辑器、
-  命令宏、准心伤害与受伤飘字。整套可以关闭，也可以限制为仅 OP 可用。
-- **配置界面**——有原生界面的加载器就用它自己的：NeoForge 按声明的开关生成；Forge 与 Fabric 则由
-  **Cloth Config**、**Jupiter** 或 **MezzConfig** 绘制，装其中任意一个即可。三者都是可选依赖；都没有时
-  开关仍在文件里，也能用指令读写。
-- **原版界面基座**——`tools.ui.vanilla.VanillaUi` 及其上的全部界面只用原版控件贴图，其它模组可直接复用。
+本库**同时也是客户端模组**：配置界面与进服提示页都在同一个 jar 里，所以只想要注册 API 的模组也只装一个文件。
 
 ### 文档
 
@@ -128,7 +104,6 @@ MerlinLib 是一款 Minecraft **前置库模组**：为模组开发者提供**�
 |---|---|
 | [`docs/USAGE.md`](docs/USAGE.md) | 配置文件、指令、配置界面的来源 |
 | [`docs/DEV.md`](docs/DEV.md) | Java API 与依赖方式 |
-| [`docs/TOOLKIT.md`](docs/TOOLKIT.md) | 测试工具集详解 |
 | [`docs/LIMITS.md`](docs/LIMITS.md) | 配置文件能做什么、不能做什么 |
 
 ### 许可证

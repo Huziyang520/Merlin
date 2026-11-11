@@ -38,13 +38,9 @@ def overlaidJava = [
         'com/huziyang520/merlinlib/api/CombatApi.java',
         'com/huziyang520/merlinlib/loot/LootInjector.java',
         'com/huziyang520/merlinlib/datapack/GeneratedPackSource.java',
-        'com/huziyang520/merlinlib/tools/TestWeapons.java',
-        'com/huziyang520/merlinlib/mixin/MixinHud.java',
-        'com/huziyang520/merlinlib/mixin/MixinHudModern.java',
         'com/huziyang520/merlinlib/mixin/MerlinMixinPlugin.java',
         'com/huziyang520/merlinlib/effect/MerlinMobEffect.java',
         'com/huziyang520/merlinlib/mixin/MixinClientPacketListenerParticles.java',
-        'com/huziyang520/merlinlib/mixin/MixinMinecraftUseItem.java',
         'com/huziyang520/merlinlib/tools/hud/CombatFeedback.java'
 ]
 def sharedJava = layout.buildDirectory.dir('shared/java')

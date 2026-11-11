@@ -7,7 +7,6 @@ import com.google.gson.JsonParser;
 import com.huziyang520.merlinlib.Constants;
 import com.huziyang520.merlinlib.content.EnchantmentDraft;
 import com.huziyang520.merlinlib.impl.ContentManager;
-import com.huziyang520.merlinlib.tools.TestWeapons;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackResources;
@@ -143,38 +142,9 @@ public final class GeneratedPack implements PackResources {
                 "data/" + tag.getNamespace() + "/tags/enchantment/" + tag.getPath() + ".json",
                 EnchantmentJsonWriter.tagBytes(json)
         ));
-        addWeaponTags(files);
         Constants.LOG.info("[MerlinLib] generated datapack opened with {} file(s) for {} enchantment(s): {}",
                 files.size(), snapshot.enchantments().size(), snapshot.enchantments().keySet());
         return files;
     }
 
-    private static void addWeaponTags(Map<String, byte[]> files) {
-        Map<ResourceLocation, List<String>> byTag = new LinkedHashMap<>();
-        for (ResourceLocation weapon : TestWeapons.ids()) {
-            TestWeapons.tagMembership(weapon).ifPresent(tags -> {
-                for (ResourceLocation tag : tags) {
-                    byTag.computeIfAbsent(tag, key -> new java.util.ArrayList<>()).add(weapon.toString());
-                }
-            });
-        }
-        for (Map.Entry<ResourceLocation, List<String>> entry : byTag.entrySet()) {
-            ResourceLocation tag = entry.getKey();
-            files.put(
-                    "data/" + tag.getNamespace() + "/tags/item/" + tag.getPath() + ".json",
-                    EnchantmentJsonWriter.tagBytes(values(entry.getValue()))
-            );
-        }
-        Constants.LOG.info("[MerlinLib] generated datapack adds the testing weapons to {} vanilla item tag(s)",
-                byTag.size());
-    }
-
-    private static com.google.gson.JsonObject values(List<String> ids) {
-        com.google.gson.JsonObject root = new com.google.gson.JsonObject();
-        com.google.gson.JsonArray array = new com.google.gson.JsonArray();
-        ids.forEach(array::add);
-        root.addProperty("replace", false);
-        root.add("values", array);
-        return root;
-    }
 }

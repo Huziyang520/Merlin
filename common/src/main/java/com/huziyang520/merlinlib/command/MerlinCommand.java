@@ -5,7 +5,6 @@ package com.huziyang520.merlinlib.command;
 import com.huziyang520.merlinlib.Constants;
 import com.huziyang520.merlinlib.api.EnchantmentInfo;
 import com.huziyang520.merlinlib.api.MerlinApi;
-import com.huziyang520.merlinlib.config.ConfigManager;
 import com.huziyang520.merlinlib.content.EnchantmentDraft;
 import com.huziyang520.merlinlib.datapack.GeneratedPack;
 import com.huziyang520.merlinlib.impl.ContentManager;
@@ -67,21 +66,7 @@ public final class MerlinCommand {
                                                 .executes(context -> LayerCommand.apply(context.getSource(),
                                                         StringArgumentType.getString(context, "effect"),
                                                         IntegerArgumentType.getInteger(context, "layers"),
-                                                        IntegerArgumentType.getInteger(context, "seconds")))))))
-                .then(Commands.literal("editorhotkey")
-                        .requires(MerlinCommand::mayManage)
-                        .then(Commands.literal("on")
-                                .executes(context -> setEditorHotkey(context, true)))
-                        .then(Commands.literal("off")
-                                .executes(context -> setEditorHotkey(context, false)))));
-    }
-
-    private static int setEditorHotkey(CommandContext<CommandSourceStack> context, boolean enabled) {
-        ConfigManager.saveClient(java.util.Map.of("editor.hotkey_enabled", Boolean.toString(enabled)));
-        context.getSource().sendSuccess(() -> Component.translatable(enabled
-                ? "command.merlinlib.editorhotkey.on"
-                : "command.merlinlib.editorhotkey.off"), false);
-        return 1;
+                                                        IntegerArgumentType.getInteger(context, "seconds"))))))));
     }
 
     private static boolean mayManage(CommandSourceStack source) {

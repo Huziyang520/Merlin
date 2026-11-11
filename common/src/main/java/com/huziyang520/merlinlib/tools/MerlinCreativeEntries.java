@@ -1,9 +1,7 @@
-// Supplies the creative inventory entries for MerlinLib content.
+// Supplies the creative inventory entry: every enchantment the library serves, as an enchanted book.
 
 package com.huziyang520.merlinlib.tools;
 
-import com.huziyang520.merlinlib.Constants;
-import com.huziyang520.merlinlib.config.ConfigManager;
 import com.huziyang520.merlinlib.impl.ContentManager;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -24,30 +22,7 @@ public final class MerlinCreativeEntries {
     public static final ResourceKey<CreativeModeTab> TAB =
             ResourceKey.create(Registries.CREATIVE_MODE_TAB, Identifier.withDefaultNamespace("ingredients"));
 
-    public static final ResourceKey<CreativeModeTab> TOOLS_TAB =
-            ResourceKey.create(Registries.CREATIVE_MODE_TAB, Identifier.withDefaultNamespace("tools_and_utilities"));
-
     private MerlinCreativeEntries() {
-    }
-
-    public static List<ItemStack> testWeapons() {
-        if (!ConfigManager.server().testingToolkitEnabled()) {
-            return List.of();
-        }
-        List<ItemStack> stacks = new ArrayList<>();
-        for (Identifier id : TestWeapons.ids()) {
-            TestWeapons.stack(id).ifPresent(stacks::add);
-        }
-        ItemStack healthEditor = HealthEditorItem.stack();
-        if (healthEditor.isEmpty()) {
-            Constants.LOG.warn("[MerlinLib] the health editor item is not registered, so it cannot be offered "
-                    + "in the creative tab");
-        } else {
-            stacks.add(healthEditor);
-        }
-        Constants.LOG.info("[MerlinLib] creative tab 'tools_and_utilities': {} testing item(s) offered",
-                stacks.size());
-        return stacks;
     }
 
     public static List<ItemStack> enchantedBooks(HolderLookup.Provider holders) {

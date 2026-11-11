@@ -26,11 +26,8 @@
   ],
   "client": [
     "MixinMinecraft",
-    "MixinMinecraftUseItem",
-    "MixinHud",
     "MixinClientLevelParticles",
-    "MixinClientPacketListenerParticles",
-    "MixinHudModern"
+    "MixinClientPacketListenerParticles"
   ],
   "server": [],
   "injectors": {

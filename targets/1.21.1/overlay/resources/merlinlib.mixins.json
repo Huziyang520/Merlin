@@ -26,9 +26,6 @@
   ],
   "client": [
     "MixinMinecraft",
-    "MixinMinecraftUseItem",
-    "MixinHud",
-    "MixinGuiGraphics",
     "MixinClientLevelParticles",
     "MixinClientPacketListenerParticles"
   ],
