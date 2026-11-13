@@ -74,6 +74,6 @@ public final class LootInjection {
     }
 
     public static Item bookItem() {
-        return Items.ENCHANTED_BOOK;
+        return Items.BOOK;
     }
 }
