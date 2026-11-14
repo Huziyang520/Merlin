@@ -12,6 +12,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -80,6 +81,11 @@ public final class LootInjector {
         LootPool.Builder pool = LootPool.lootPool();
         boolean anyEntry = false;
         for (LootInjection rule : rules) {
+            if (rule.getForm() == LootInjection.Form.RANDOM_BOOK) {
+                pool.add(baseEntry(rule).apply(Holder.direct(randomBook(registries).build())));
+                anyEntry = true;
+                continue;
+            }
             for (String enchantmentId : rule.getEnchantments()) {
                 Holder<Enchantment> enchantment = resolve(registries, enchantmentId);
                 if (enchantment == null) {
@@ -88,17 +94,24 @@ public final class LootInjector {
                             rule.getTargetTables());
                     continue;
                 }
-                pool.add(buildEntry(rule, enchantment));
+                pool.add(baseEntry(rule).apply(Holder.direct(
+                        EnchantRandomlyFunction.randomEnchantment().withEnchantment(enchantment).build())));
                 anyEntry = true;
             }
         }
         return anyEntry ? pool : null;
     }
 
-    private static UniformContainerBase.Builder<?> buildEntry(LootInjection injection,
-                                                              Holder<Enchantment> enchantment) {
-        Item item = injection.getForm() == LootInjection.Form.BOOK ? LootInjection.bookItem()
-                : injection.getItem();
+    private static EnchantRandomlyFunction.Builder randomBook(HolderGetter.Provider registries) {
+        EnchantRandomlyFunction.Builder builder = EnchantRandomlyFunction.randomEnchantment();
+        registries.lookupOrThrow(Registries.ENCHANTMENT).get(EnchantmentTags.ON_RANDOM_LOOT)
+                .ifPresent(builder::withOneOf);
+        return builder;
+    }
+
+    private static UniformContainerBase.Builder<?> baseEntry(LootInjection injection) {
+        Item item = injection.getForm() == LootInjection.Form.ITEM ? injection.getItem()
+                : LootInjection.bookItem();
         UniformContainerBase.Builder<?> entry = LootItem.lootTableItem(item)
                 .setWeight(injection.getWeight())
                 .setQuality(injection.getQuality());
@@ -106,8 +119,7 @@ public final class LootInjector {
             entry = entry.when(Holder.direct(
                     LootItemRandomChanceCondition.randomChance(injection.getChance()).build()));
         }
-        return entry.apply(Holder.direct(
-                EnchantRandomlyFunction.randomEnchantment().withEnchantment(enchantment).build()));
+        return entry;
     }
 
     private static Holder<Enchantment> resolve(HolderGetter.Provider registries, String id) {

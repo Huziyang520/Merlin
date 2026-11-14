@@ -134,9 +134,12 @@ MerlinApi.loot().register(LootInjectionBuilder.create()
 ```
 
 Each rule becomes one loot pool holding an enchanted book (`asBook`) or an item (`asItem`) behind a
-random-chance condition. `LootTables` lists the vanilla table names as constants, so a typo is a
-compile error instead of a rule that silently never fires. An enchantment that does not exist is
-logged and skipped — a missing entry never stops a table from loading.
+random-chance condition. `asRandomBook()` instead drops an ordinary enchanted book whose enchantment is
+rolled from the pool the table already uses (`#minecraft:on_random_loot` from 1.21 on, the discoverable
+set on 1.20.1), so vanilla, this mod's and other mods' enchantments can all turn up and the rule only
+decides where and how often a book appears. `LootTables` lists the vanilla table names as constants,
+so a typo is a compile error instead of a rule that silently never fires. An enchantment that does not
+exist is logged and skipped — a missing entry never stops a table from loading.
 
 ### Join notices
 
@@ -318,6 +321,9 @@ MerlinApi.loot().register(LootInjectionBuilder.create()
 ```
 
 每条规则变成一个战利品池，池里是按随机概率判定的附魔书（`asBook`）或指定物品（`asItem`）。
+`asRandomBook()` 掉的是普通随机附魔书——内容取自这张箱子平时用的随机池（1.21 起为
+`#minecraft:on_random_loot`，1.20.1 为可发现附魔集），原版、本模组与其它模组的附魔都可能出现，
+规则只决定"哪个表、多少概率出一本书"。
 `LootTables` 把原版表名写成常量，拼错是编译错误，而不是"规则悄悄不触发"。写错的附魔只记日志跳过，
 绝不让一张表加载失败。
 

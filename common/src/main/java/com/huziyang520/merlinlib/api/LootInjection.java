@@ -10,6 +10,8 @@ public final class LootInjection {
     public enum Form {
         BOOK,
 
+        RANDOM_BOOK,
+
         ITEM
     }
 

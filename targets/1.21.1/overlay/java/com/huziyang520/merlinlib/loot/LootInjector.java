@@ -12,6 +12,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -65,6 +66,11 @@ public final class LootInjector {
     }
 
     private static LootPool.Builder buildPool(LootInjection injection, HolderGetter.Provider registries) {
+        if (injection.getForm() == LootInjection.Form.RANDOM_BOOK) {
+            LootPool.Builder single = LootPool.lootPool();
+            single.add(baseEntry(injection).apply(randomBook(registries)));
+            return single;
+        }
         LootPool.Builder pool = LootPool.lootPool();
         boolean anyEntry = false;
         for (String enchantmentId : injection.getEnchantments()) {
@@ -75,23 +81,30 @@ public final class LootInjector {
                         injection.getTargetTables());
                 continue;
             }
-            pool.add(buildEntry(injection, enchantment));
+            pool.add(baseEntry(injection).apply(
+                    EnchantRandomlyFunction.randomEnchantment().withEnchantment(enchantment)));
             anyEntry = true;
         }
         return anyEntry ? pool : null;
     }
 
-    private static LootPoolSingletonContainer.Builder<?> buildEntry(LootInjection injection,
-                                                              Holder<Enchantment> enchantment) {
-        Item item = injection.getForm() == LootInjection.Form.BOOK ? LootInjection.bookItem()
-                : injection.getItem();
+    private static EnchantRandomlyFunction.Builder randomBook(HolderGetter.Provider registries) {
+        EnchantRandomlyFunction.Builder builder = EnchantRandomlyFunction.randomEnchantment();
+        registries.lookupOrThrow(Registries.ENCHANTMENT).get(EnchantmentTags.ON_RANDOM_LOOT)
+                .ifPresent(builder::withOneOf);
+        return builder;
+    }
+
+    private static LootPoolSingletonContainer.Builder<?> baseEntry(LootInjection injection) {
+        Item item = injection.getForm() == LootInjection.Form.ITEM ? injection.getItem()
+                : LootInjection.bookItem();
         LootPoolSingletonContainer.Builder<?> entry = LootItem.lootTableItem(item)
                 .setWeight(injection.getWeight())
                 .setQuality(injection.getQuality());
         if (injection.getChance() < 1.0F) {
             entry = entry.when(LootItemRandomChanceCondition.randomChance(injection.getChance()));
         }
-        return entry.apply(EnchantRandomlyFunction.randomEnchantment().withEnchantment(enchantment));
+        return entry;
     }
 
     private static Holder<Enchantment> resolve(HolderGetter.Provider registries, String id) {

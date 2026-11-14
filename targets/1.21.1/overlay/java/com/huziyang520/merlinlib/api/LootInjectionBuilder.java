@@ -46,6 +46,12 @@ public final class LootInjectionBuilder {
         return this;
     }
 
+    public LootInjectionBuilder asRandomBook() {
+        this.form = LootInjection.Form.RANDOM_BOOK;
+        this.item = null;
+        return this;
+    }
+
     public LootInjectionBuilder asItem(Item item) {
         this.form = LootInjection.Form.ITEM;
         this.item = item;
@@ -90,7 +96,7 @@ public final class LootInjectionBuilder {
         if (this.targetTables.isEmpty()) {
             throw new IllegalStateException("[MerlinLib] a loot injection needs at least one target table");
         }
-        if (this.enchantments.isEmpty()) {
+        if (this.form != LootInjection.Form.RANDOM_BOOK && this.enchantments.isEmpty()) {
             throw new IllegalStateException("[MerlinLib] a loot injection needs at least one enchantment");
         }
         if (this.form == LootInjection.Form.ITEM && this.item == null) {
