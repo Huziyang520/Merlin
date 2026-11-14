@@ -63,6 +63,11 @@ public final class LootInjector {
     }
 
     private static LootPool.Builder buildPool(LootInjection injection) {
+        if (injection.getForm() == LootInjection.Form.RANDOM_BOOK) {
+            LootPool.Builder single = LootPool.lootPool();
+            single.add(baseEntry(injection).apply(EnchantRandomlyFunction.randomEnchantment()));
+            return single;
+        }
         LootPool.Builder pool = LootPool.lootPool();
         boolean anyEntry = false;
         for (String enchantmentId : injection.getEnchantments()) {
@@ -73,23 +78,23 @@ public final class LootInjector {
                         injection.getTargetTables());
                 continue;
             }
-            pool.add(buildEntry(injection, enchantment));
+            pool.add(baseEntry(injection).apply(
+                    EnchantRandomlyFunction.randomEnchantment().withEnchantment(enchantment)));
             anyEntry = true;
         }
         return anyEntry ? pool : null;
     }
 
-    private static LootPoolSingletonContainer.Builder<?> buildEntry(LootInjection injection,
-                                                                   Enchantment enchantment) {
-        Item item = injection.getForm() == LootInjection.Form.BOOK ? LootInjection.bookItem()
-                : injection.getItem();
+    private static LootPoolSingletonContainer.Builder<?> baseEntry(LootInjection injection) {
+        Item item = injection.getForm() == LootInjection.Form.ITEM ? injection.getItem()
+                : LootInjection.bookItem();
         LootPoolSingletonContainer.Builder<?> entry = LootItem.lootTableItem(item)
                 .setWeight(injection.getWeight())
                 .setQuality(injection.getQuality());
         if (injection.getChance() < 1.0F) {
             entry = entry.when(LootItemRandomChanceCondition.randomChance(injection.getChance()));
         }
-        return entry.apply(EnchantRandomlyFunction.randomEnchantment().withEnchantment(enchantment));
+        return entry;
     }
 
     private static Enchantment resolve(String id) {

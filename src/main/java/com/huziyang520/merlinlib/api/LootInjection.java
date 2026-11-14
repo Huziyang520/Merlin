@@ -10,6 +10,8 @@ public final class LootInjection {
     public enum Form {
         BOOK,
 
+        RANDOM_BOOK,
+
         ITEM
     }
 
@@ -74,6 +76,6 @@ public final class LootInjection {
     }
 
     public static Item bookItem() {
-        return Items.ENCHANTED_BOOK;
+        return Items.BOOK;
     }
 }
