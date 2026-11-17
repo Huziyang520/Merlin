@@ -11,6 +11,7 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -18,8 +19,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Projectile.class)
 public class MixinProjectileHit {
-    @Inject(method = "onHitEntity", at = @At("RETURN"))
-    private void merlinlib$projectileHit(EntityHitResult result, CallbackInfo info) {
+    @Inject(method = "onHit", at = @At("TAIL"))
+    private void merlinlib$projectileHit(HitResult hitResult, CallbackInfo info) {
+        if (!(hitResult instanceof EntityHitResult result)) {
+            return;
+        }
         if (!EnchantmentEventDispatcher.hasCallbacks(BuiltInEvents.PROJECTILE_HIT)) {
             return;
         }
