@@ -8,11 +8,16 @@ import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 
 public final class FabricConfig {
     private static final String PORT_API = "fuzs.forgeconfigapiport.fabric.api.v5.ConfigRegistry";
+    private static boolean installed;
 
     private FabricConfig() {
     }
 
     public static boolean install() {
+        if (installed) {
+            return true;
+        }
+        installed = true;
         if (!portPresent()) {
             ConfigManager.setBackend(new TomlBackend("plain"));
             Constants.LOG.info("[MerlinLib] Forge Config API Port is missing: client.toml is read directly and "
