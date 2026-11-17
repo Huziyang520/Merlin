@@ -19,6 +19,8 @@ dependencies {
     // and compiled against from there; compileOnly means it is not inside the built jar either, so a pack
     // without Jupiter simply never loads JupiterUi.
     compileOnly(files("libs/jupiter-2.4.3-26.2-universal.jar"))
+    // Forge Config API Port: provides ModConfigSpec and the NeoForge configuration screen on Fabric.
+    compileOnly(files("libs/forge-config-api-port-26.3.1.jar"))
     minecraft("com.mojang:minecraft:${minecraft_version}")
     // Plain implementation: probed on 2026-09-24 with Loom 1.18.1, modImplementation() no longer
     // exists on Loom 1.18 (the old docs 06 section 6.3.2 rule only applies to the Loom 1.8/1.9 line).

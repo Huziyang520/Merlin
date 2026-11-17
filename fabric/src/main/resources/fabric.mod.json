@@ -43,10 +43,7 @@
         "fabricloader": ">=${fabric_loader_version}",
         "fabric-api": "*",
         "minecraft": "~${minecraft_version}",
-        "java": ">=${java_version}"
-    },
-    "recommends": {
-        "cloth-config": "*",
-        "jupiter": "*"
+        "java": ">=${java_version}",
+        "forge-config-api-port": "*"
     }
 }
