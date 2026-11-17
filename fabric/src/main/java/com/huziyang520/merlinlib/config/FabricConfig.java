@@ -26,6 +26,8 @@ public final class FabricConfig {
         }
         FcapConfigs.install();
         ConfigManager.setBackend(FcapConfigs.clientBackend());
+        // 服务端开关同样走 Forge Config API Port，否则读不到 common 里的值
+        ConfigManager.setServerBackend(FcapConfigs.commonBackend());
         ConfigScreens.install(parent -> new ConfigurationScreen(Constants.MOD_ID, parent));
         Constants.LOG.info("[MerlinLib] Forge Config API Port found: the configuration screen is the NeoForge one");
         return true;
