@@ -28,6 +28,23 @@ public interface EvolutionApi {
 
     Outcome roll(EvolutionRule rule, RandomSource random);
 
+    /**
+     * Rolls with the source's strength scaling the rule's base chances; the remainder always fails.
+     *
+     * @param strengthScale 0..1, where the rule's own chances apply at 1
+     */
+    default Outcome roll(EvolutionRule rule, float strengthScale, RandomSource random) {
+        float scale = Math.max(0.0F, Math.min(1.0F, strengthScale));
+        double value = random.nextDouble();
+        if (value < rule.evolveChance() * scale) {
+            return Outcome.EVOLVED;
+        }
+        if (value < (rule.evolveChance() + rule.transmuteChance()) * scale) {
+            return Outcome.TRANSMUTED;
+        }
+        return Outcome.FAILED;
+    }
+
     boolean applyEvolution(ItemStack stack, EvolutionRule rule, HolderLookup.Provider registries);
 
     boolean applyTransmutation(ItemStack stack, int strength, HolderLookup.Provider registries, RandomSource random);
