@@ -4,6 +4,7 @@ package com.huziyang520.merlinlib.api;
 
 import com.huziyang520.merlinlib.impl.EffectRegistry;
 import com.huziyang520.merlinlib.impl.EnchantmentRegistry;
+import com.huziyang520.merlinlib.impl.EvolutionRegistry;
 import com.huziyang520.merlinlib.impl.PotionRegistry;
 
 public final class MerlinApi {
@@ -69,5 +70,9 @@ public final class MerlinApi {
 
     public static AiApi ai() {
         return AiApi.INSTANCE;
+    }
+
+    public static EvolutionApi evolution() {
+        return EvolutionRegistry.INSTANCE;
     }
 }

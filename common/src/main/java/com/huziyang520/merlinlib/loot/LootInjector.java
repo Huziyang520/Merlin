@@ -19,6 +19,7 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.UniformContainerBase;
 import net.minecraft.world.level.storage.loot.functions.EnchantRandomlyFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -86,6 +87,15 @@ public final class LootInjector {
                 anyEntry = true;
                 continue;
             }
+            if (rule.getForm() == LootInjection.Form.PLAIN_ITEM) {
+                UniformContainerBase.Builder<?> entry = baseEntry(rule);
+                for (LootItemFunction function : rule.getFunctions()) {
+                    entry = entry.apply(Holder.direct(function));
+                }
+                pool.add(entry);
+                anyEntry = true;
+                continue;
+            }
             for (String enchantmentId : rule.getEnchantments()) {
                 Holder<Enchantment> enchantment = resolve(registries, enchantmentId);
                 if (enchantment == null) {
@@ -110,7 +120,8 @@ public final class LootInjector {
     }
 
     private static UniformContainerBase.Builder<?> baseEntry(LootInjection injection) {
-        Item item = injection.getForm() == LootInjection.Form.ITEM ? injection.getItem()
+        Item item = injection.getForm() == LootInjection.Form.ITEM
+                || injection.getForm() == LootInjection.Form.PLAIN_ITEM ? injection.getItem()
                 : LootInjection.bookItem();
         UniformContainerBase.Builder<?> entry = LootItem.lootTableItem(item)
                 .setWeight(injection.getWeight())

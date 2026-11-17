@@ -97,6 +97,10 @@ public final class EnchantmentBuilder {
         return this;
     }
 
+    public EnchantmentBuilder exclusiveSet(String exclusiveSet) {
+        return exclusiveSet(EnchantmentJson.tag(exclusiveSet));
+    }
+
     public EnchantmentBuilder effects(JsonObject effects) {
         this.effects = effects;
         return this;

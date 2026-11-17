@@ -4,6 +4,8 @@ package com.huziyang520.merlinlib.api;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import java.util.List;
 import java.util.Set;
 
 public final class LootInjection {
@@ -12,7 +14,9 @@ public final class LootInjection {
 
         RANDOM_BOOK,
 
-        ITEM
+        ITEM,
+
+        PLAIN_ITEM
     }
 
     private final Set<String> targetTables;
@@ -23,9 +27,10 @@ public final class LootInjection {
     private final int weight;
     private final int quality;
     private final boolean moddedTables;
+    private final List<LootItemFunction> functions;
 
     LootInjection(Set<String> targetTables, Form form, Item item, Set<String> enchantments, float chance,
-                  int weight, int quality, boolean moddedTables) {
+                  int weight, int quality, boolean moddedTables, List<LootItemFunction> functions) {
         this.targetTables = targetTables;
         this.form = form;
         this.item = item;
@@ -34,6 +39,11 @@ public final class LootInjection {
         this.weight = weight;
         this.quality = quality;
         this.moddedTables = moddedTables;
+        this.functions = List.copyOf(functions);
+    }
+
+    public List<LootItemFunction> getFunctions() {
+        return this.functions;
     }
 
     public boolean allowsModdedTables() {
