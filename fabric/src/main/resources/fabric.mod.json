@@ -44,6 +44,6 @@
         "fabric-api": "*",
         "minecraft": "~${minecraft_version}",
         "java": ">=${java_version}",
-        "forge-config-api-port": "*"
+        "forgeconfigapiport": "*"
     }
 }
