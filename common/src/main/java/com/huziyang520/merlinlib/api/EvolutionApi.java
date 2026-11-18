@@ -48,4 +48,12 @@ public interface EvolutionApi {
     boolean applyEvolution(ItemStack stack, EvolutionRule rule, HolderLookup.Provider registries);
 
     boolean applyTransmutation(ItemStack stack, int strength, HolderLookup.Provider registries, RandomSource random);
+
+    /**
+     * Transmutes while dropping the rule's source enchantment, so a success replaces it instead of stacking.
+     */
+    default boolean applyTransmutation(ItemStack stack, EvolutionRule rule, int strength,
+                                       HolderLookup.Provider registries, RandomSource random) {
+        return applyTransmutation(stack, strength, registries, random);
+    }
 }

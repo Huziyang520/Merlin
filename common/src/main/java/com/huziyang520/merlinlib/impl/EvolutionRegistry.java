@@ -65,7 +65,7 @@ public final class EvolutionRegistry implements EvolutionApi {
         if (stack == null || stack.isEmpty() || this.rules.isEmpty()) {
             return null;
         }
-        ItemEnchantments carried = stack.getEnchantments();
+        ItemEnchantments carried = EnchantmentHelper.getEnchantmentsForCrafting(stack);
         if (carried.isEmpty()) {
             return null;
         }
@@ -100,12 +100,22 @@ public final class EvolutionRegistry implements EvolutionApi {
             return false;
         }
         int level = Math.max(1, Math.min(target.get().value().getMaxLevel(), carriedLevel(stack, rule, lookup)));
-        return write(stack, target.get(), level);
+        return write(stack, mutable -> {
+            Optional<Holder.Reference<Enchantment>> source = lookup.get(key(rule.from()));
+            source.ifPresent(holder -> mutable.set(holder, 0));
+            mutable.set(target.get(), level);
+        });
     }
 
     @Override
     public boolean applyTransmutation(ItemStack stack, int strength, HolderLookup.Provider registries,
                                       RandomSource random) {
+        return applyTransmutation(stack, null, strength, registries, random);
+    }
+
+    @Override
+    public boolean applyTransmutation(ItemStack stack, EvolutionRule rule, int strength,
+                                      HolderLookup.Provider registries, RandomSource random) {
         if (!EnchantmentHelper.canStoreEnchantments(stack)) {
             return false;
         }
@@ -135,7 +145,14 @@ public final class EvolutionRegistry implements EvolutionApi {
             }
         }
         int level = levelFor(chosen.value(), strength);
-        return write(stack, chosen, level);
+        Optional<Holder.Reference<Enchantment>> source =
+                rule == null ? Optional.empty() : lookup.get(key(rule.from()));
+        final Holder.Reference<Enchantment> picked = chosen;
+        final int pickedLevel = level;
+        return write(stack, mutable -> {
+            source.ifPresent(holder -> mutable.set(holder, 0));
+            mutable.set(picked, pickedLevel);
+        });
     }
 
     private boolean isEligible(Holder.Reference<Enchantment> candidate, ItemStack stack, Set<Holder<Enchantment>> owned,
@@ -144,7 +161,7 @@ public final class EvolutionRegistry implements EvolutionApi {
         if (key.isPresent() && this.excluded.contains(key.get().identifier())) {
             return false;
         }
-        if (owned.contains(candidate)) {
+        if (owned.contains(candidate) || candidate.is(net.minecraft.tags.EnchantmentTags.CURSE)) {
             return false;
         }
         if (!book && !candidate.value().canEnchant(stack)) {
@@ -161,14 +178,23 @@ public final class EvolutionRegistry implements EvolutionApi {
 
     private static int carriedLevel(ItemStack stack, EvolutionRule rule, HolderLookup.RegistryLookup<Enchantment> lookup) {
         Optional<Holder.Reference<Enchantment>> source = lookup.get(key(rule.from()));
-        return source.map(enchantment -> Math.max(1, stack.getEnchantments().getLevel(enchantment))).orElse(1);
+        ItemEnchantments carried = EnchantmentHelper.getEnchantmentsForCrafting(stack);
+        return source.map(enchantment -> Math.max(1, carried.getLevel(enchantment))).orElse(1);
     }
 
-    private static boolean write(ItemStack stack, Holder<Enchantment> enchantment, int level) {
+    private static boolean write(ItemStack stack, java.util.function.Consumer<ItemEnchantments.Mutable> action) {
         if (!EnchantmentHelper.canStoreEnchantments(stack)) {
             return false;
         }
-        EnchantmentHelper.updateEnchantments(stack, mutable -> mutable.set(enchantment, level));
+        ItemEnchantments.Mutable mutable =
+                new ItemEnchantments.Mutable(EnchantmentHelper.getEnchantmentsForCrafting(stack));
+        action.accept(mutable);
+        ItemEnchantments result = mutable.toImmutable();
+        if (stack.is(Items.ENCHANTED_BOOK)) {
+            stack.set(net.minecraft.core.component.DataComponents.STORED_ENCHANTMENTS, result);
+        } else {
+            stack.set(net.minecraft.core.component.DataComponents.ENCHANTMENTS, result);
+        }
         return true;
     }
 
