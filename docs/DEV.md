@@ -223,6 +223,23 @@ int softer = MerlinColor.mix(MerlinColor.CYAN, MerlinColor.WHITE, 0.25F);
 the pattern behind "a temporary effect that ends when the enchantment is removed". `SmeltingLookup`
 answers what an item smelts into.
 
+### Rainbow and gradient text
+
+Names with a colour gradient are one API call. Colors are assigned per character, so the gradient
+survives any name length and any translation.
+
+```java
+MerlinApi.text().rainbow(name);                        // hue drifts with wall-clock time
+MerlinApi.text().rainbow(name, 5000L, 0.12F);          // custom cycle length and hue distance
+MerlinApi.text().rainbowStatic(name);                  // frozen rainbow
+MerlinApi.text().gradient(name, 0xFFD700, 0x8A2BE2);   // frozen two-color gradient
+```
+
+- `rainbow` returns a new component; the style of the source component is kept and only the color is replaced.
+- The animation is driven by `System.currentTimeMillis()`, so client and server produce the same frame
+  without any packet; a tooltip therefore animates while it is open.
+- `TextApi.hueToRgb(float)` is public if you need the raw color for your own rendering.
+
 ### Knockback that works on every target line
 
 ```java
@@ -367,6 +384,21 @@ ScreenIntro intro = UiAnimation.intro();          // 默认 SCALE_POP，需要�
 - `Easing` 是五条缓动（纯 double 函数，签名里没有 Minecraft 类型）；
 - `ScreenIntro` 是一个入场动画——`SCALE_POP`、`SLIDE_UP`、`SLIDE_SIDE` 或 `FADE`——给出某个时长下的进度、缩放与偏移；
 - `UiAnimation` 只负责取值，不读任何配置文件，所以模组用自己开关，不继承别人的。
+
+### 彩色文本
+
+带渐变的名称只需一次调用。颜色逐字分配，名称长度或译文变化都不影响渐变。
+
+```java
+MerlinApi.text().rainbow(name);                        // 色相随时间流动
+MerlinApi.text().rainbow(name, 5000L, 0.12F);          // 自定义循环时长与色相间距
+MerlinApi.text().rainbowStatic(name);                  // 静态彩虹（不随时间变化）
+MerlinApi.text().gradient(name, 0xFFD700, 0x8A2BE2);   // 静态双色渐变
+```
+
+- 返回新的组件；源组件的样式保留，只替换颜色。
+- 动画取自 `System.currentTimeMillis()`，客户端与服务端得到同一帧、不需要发包，所以提示框开着时会持续流动。
+- 需要自己渲染时可以直接用公开的 `TextApi.hueToRgb(float)` 取色。
 
 ### 击退
 

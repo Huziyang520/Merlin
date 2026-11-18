@@ -72,6 +72,10 @@ public final class MerlinApi {
         return AiApi.INSTANCE;
     }
 
+    public static TextApi text() {
+        return TextApi.instance();
+    }
+
     public static EvolutionApi evolution() {
         return EvolutionRegistry.INSTANCE;
     }
