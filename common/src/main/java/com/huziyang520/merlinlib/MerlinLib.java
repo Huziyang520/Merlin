@@ -71,18 +71,10 @@ public class MerlinLib {
             }
         });
         ConfigManager.reload();
-        registerOwnNotices();
         widenAttributeCeilings();
         MerlinApi.lifecycle().onServerStarting(SmeltingLookup::initialize);
         BuiltInContent.register();
         ContentManager.refresh();
-    }
-
-    private static void registerOwnNotices() {
-        MerlinApi.notices().register(
-                Identifier.fromNamespaceAndPath(Constants.MOD_ID, "config_ui"),
-                NoticeMode.EVERY_JOIN,
-                Component.translatable("merlinlib.notice.config_ui"));
     }
 
     private static void widenAttributeCeilings() {
