@@ -103,7 +103,8 @@ public final class LootInjectionBuilder {
             throw new IllegalStateException("[MerlinLib] an item loot injection needs the item to drop");
         }
         return new LootInjection(Set.copyOf(this.targetTables), this.form, this.item, Set.copyOf(this.enchantments),
-                clampChance(this.chance), Math.max(1, this.weight), this.quality, this.moddedTables);
+                clampChance(this.chance), Math.max(1, this.weight), this.quality, this.moddedTables,
+                java.util.List.of());
     }
 
     private static float clampChance(float chance) {
