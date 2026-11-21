@@ -17,6 +17,13 @@ public final class EnchantmentTextRegistry implements EnchantmentTextApi {
 
     private final Map<String, Component> replacements = new ConcurrentHashMap<>();
     private final Map<String, UnaryOperator<Component>> styles = new ConcurrentHashMap<>();
+    // Cached per 50ms bucket: every name lookup inside one frame must return an equal component,
+    // otherwise mods that match tooltip lines by name flicker.
+    private final Map<String, Cached> cache = new ConcurrentHashMap<>();
+    private static final long BUCKET_MS = 50L;
+
+    private record Cached(long bucket, Component component) {
+    }
 
     private EnchantmentTextRegistry() {
     }
@@ -75,6 +82,12 @@ public final class EnchantmentTextRegistry implements EnchantmentTextApi {
         if (replaced == null && style == null) {
             return null;
         }
+        long bucket = System.currentTimeMillis() / BUCKET_MS;
+        String cacheKey = langKey + "#" + level;
+        Cached cached = this.cache.get(cacheKey);
+        if (cached != null && cached.bucket() == bucket) {
+            return cached.component();
+        }
         MutableComponent name = (replaced == null ? Component.translatable(langKey).copy() : replaced.copy());
         if (style != null) {
             name = style.apply(name).copy();
@@ -82,6 +95,7 @@ public final class EnchantmentTextRegistry implements EnchantmentTextApi {
         if (level != 1) {
             name.append(CommonComponents.SPACE).append(Component.translatable("enchantment.level." + level));
         }
+        this.cache.put(cacheKey, new Cached(bucket, name));
         return name;
     }
 }
