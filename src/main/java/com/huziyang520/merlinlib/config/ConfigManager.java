@@ -35,6 +35,19 @@ public final class ConfigManager {
         reload();
     }
 
+    /** 接管一个已有文件支撑的后端，不做一次性迁移：旧 toml 还要继续作为缺省项来源。 */
+    public static synchronized void adoptBackend(ConfigBackend backend) {
+        clientBackend = backend;
+        Constants.LOG.info("[MerlinLib] client switches are now read from {}", backend.name());
+        reload();
+    }
+
+    public static synchronized void adoptServerBackend(ConfigBackend backend) {
+        serverBackend = backend;
+        Constants.LOG.info("[MerlinLib] server switches are now read from {}", backend.name());
+        reload();
+    }
+
     public static synchronized void setServerBackend(ConfigBackend backend) {
         serverBackend = backend;
         Constants.LOG.info("[MerlinLib] server switches are now read from {}", backend.name());

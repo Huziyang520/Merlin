@@ -6,7 +6,6 @@ package com.huziyang520.merlinlib.config;
 import com.huziyang520.merlinlib.Constants;
 import com.huziyang520.merlinlib.tools.ui.ConfigScreens;
 import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.config.ModConfig;
 
 public final class ForgeConfig {
     private static final String NCP_REGISTRATION =
@@ -24,8 +23,9 @@ public final class ForgeConfig {
         }
         installed = true;
         if (ncpPresent()) {
-            ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, SpecConfig.CLIENT_SPEC);
-            ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, SpecConfig.SERVER_SPEC);
+            ForgeSpecs.register();
+            ConfigManager.adoptBackend(ForgeSpecs.clientBackend());
+            ConfigManager.adoptServerBackend(ForgeSpecs.commonBackend());
             registerWithPort();
             Constants.LOG.info("[MerlinLib] Neo Configuration Screen Port found: the configuration screen edits "
                     + "client.toml and server.toml");
