@@ -30,6 +30,10 @@ public class MerlinLibForge {
             com.huziyang520.merlinlib.config.ForgeConfig.install();
             com.huziyang520.merlinlib.client.MerlinConfigEntry.register();
         }
+        modBus.addListener((net.minecraftforge.fml.event.config.ModConfigEvent event) -> {
+            com.huziyang520.merlinlib.config.SpecConfig.applyClient();
+            com.huziyang520.merlinlib.config.SpecConfig.applyServer();
+        });
 
         Services.PACK.bootstrap(modBus);
         Services.REGISTRATIONS.bootstrap(modBus);

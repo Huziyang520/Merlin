@@ -14,6 +14,9 @@ public final class MerlinConfigEntry {
     }
 
     public static void register() {
+        if (ForgeConfig.portInstalled()) {
+            return;
+        }
         if (!ForgeConfig.available()) {
             Constants.LOG.info("[MerlinLib] no configuration screen is installed; the switches stay editable "
                     + "in config/MerlinLib/client.toml");
