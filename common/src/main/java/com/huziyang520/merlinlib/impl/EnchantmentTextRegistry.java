@@ -18,6 +18,12 @@ public final class EnchantmentTextRegistry implements EnchantmentTextApi {
 
     private final Map<String, Component> replacements = new ConcurrentHashMap<>();
     private final Map<String, UnaryOperator<Component>> styles = new ConcurrentHashMap<>();
+    // 名字样式按 50ms 一档缓存：同一帧内多次取名字必须返回等价组件，否则按名字比对的下游模组会时好时坏。
+    private final Map<String, Cached> cache = new ConcurrentHashMap<>();
+    private static final long BUCKET_MS = 50L;
+
+    private record Cached(long bucket, Component component) {
+    }
 
     private EnchantmentTextRegistry() {
     }
@@ -40,6 +46,7 @@ public final class EnchantmentTextRegistry implements EnchantmentTextApi {
         } else {
             this.replacements.put(langKey, text);
         }
+        this.cache.clear();
     }
 
     @Override
@@ -52,6 +59,7 @@ public final class EnchantmentTextRegistry implements EnchantmentTextApi {
         } else {
             this.styles.put(langKey, style);
         }
+        this.cache.clear();
     }
 
     @Override
@@ -59,6 +67,7 @@ public final class EnchantmentTextRegistry implements EnchantmentTextApi {
         if (langKey != null) {
             this.replacements.remove(langKey);
             this.styles.remove(langKey);
+            this.cache.clear();
         }
     }
 
@@ -76,6 +85,12 @@ public final class EnchantmentTextRegistry implements EnchantmentTextApi {
         if (replaced == null && style == null) {
             return null;
         }
+        long bucket = System.currentTimeMillis() / BUCKET_MS;
+        String cacheKey = langKey + "#" + level;
+        Cached cached = this.cache.get(cacheKey);
+        if (cached != null && cached.bucket() == bucket) {
+            return cached.component();
+        }
         MutableComponent name = (replaced == null ? enchantment.value().description().copy() : replaced.copy());
         if (style != null) {
             name = style.apply(name).copy();
@@ -83,6 +98,7 @@ public final class EnchantmentTextRegistry implements EnchantmentTextApi {
         if (level != 1) {
             name.append(CommonComponents.SPACE).append(Component.translatable("enchantment.level." + level));
         }
+        this.cache.put(cacheKey, new Cached(bucket, name));
         return name;
     }
 }
