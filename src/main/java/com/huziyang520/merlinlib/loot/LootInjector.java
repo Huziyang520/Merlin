@@ -15,6 +15,7 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer;
 import net.minecraft.world.level.storage.loot.functions.EnchantRandomlyFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -63,6 +64,15 @@ public final class LootInjector {
     }
 
     private static LootPool.Builder buildPool(LootInjection injection) {
+        if (injection.getForm() == LootInjection.Form.PLAIN_ITEM) {
+            LootPool.Builder single = LootPool.lootPool();
+            LootPoolSingletonContainer.Builder<?> entry = baseEntry(injection);
+            for (LootItemFunction.Builder function : injection.getFunctions()) {
+                entry = entry.apply(function);
+            }
+            single.add(entry);
+            return single;
+        }
         if (injection.getForm() == LootInjection.Form.RANDOM_BOOK) {
             LootPool.Builder single = LootPool.lootPool();
             single.add(baseEntry(injection).apply(EnchantRandomlyFunction.randomEnchantment()));
@@ -86,7 +96,8 @@ public final class LootInjector {
     }
 
     private static LootPoolSingletonContainer.Builder<?> baseEntry(LootInjection injection) {
-        Item item = injection.getForm() == LootInjection.Form.ITEM ? injection.getItem()
+        Item item = injection.getForm() == LootInjection.Form.ITEM
+                || injection.getForm() == LootInjection.Form.PLAIN_ITEM ? injection.getItem()
                 : LootInjection.bookItem();
         LootPoolSingletonContainer.Builder<?> entry = LootItem.lootTableItem(item)
                 .setWeight(injection.getWeight())

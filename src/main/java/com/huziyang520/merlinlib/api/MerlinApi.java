@@ -2,8 +2,12 @@
 
 package com.huziyang520.merlinlib.api;
 
+import com.huziyang520.merlinlib.impl.CompatRegistry;
 import com.huziyang520.merlinlib.impl.EffectRegistry;
+import com.huziyang520.merlinlib.impl.EnchantingPowerScanner;
 import com.huziyang520.merlinlib.impl.EnchantmentRegistry;
+import com.huziyang520.merlinlib.impl.EnchantmentTextRegistry;
+import com.huziyang520.merlinlib.impl.EvolutionRegistry;
 import com.huziyang520.merlinlib.impl.PotionRegistry;
 
 public final class MerlinApi {
@@ -53,5 +57,25 @@ public final class MerlinApi {
 
     public static CombatApi combat() {
         return CombatApi.INSTANCE;
+    }
+
+    public static TextApi text() {
+        return TextApi.instance();
+    }
+
+    public static EvolutionApi evolution() {
+        return EvolutionRegistry.INSTANCE;
+    }
+
+    public static EnchantingPowerApi enchantingPower() {
+        return EnchantingPowerScanner.INSTANCE;
+    }
+
+    public static EnchantmentTextApi enchantmentText() {
+        return EnchantmentTextRegistry.INSTANCE;
+    }
+
+    public static CompatApi compat() {
+        return CompatRegistry.INSTANCE;
     }
 }

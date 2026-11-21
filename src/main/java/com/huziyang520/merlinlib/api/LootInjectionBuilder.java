@@ -2,15 +2,21 @@
 
 package com.huziyang520.merlinlib.api;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import net.minecraft.world.level.storage.loot.functions.SetNbtFunction;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 public final class LootInjectionBuilder {
     private final Set<String> targetTables = new LinkedHashSet<>();
     private final Set<String> enchantments = new LinkedHashSet<>();
+    private final List<LootItemFunction.Builder> functions = new ArrayList<>();
     private LootInjection.Form form = LootInjection.Form.BOOK;
     private Item item;
     private float chance = 1.0F;
@@ -62,6 +68,31 @@ public final class LootInjectionBuilder {
         return asItem(item.asItem());
     }
 
+    public LootInjectionBuilder asPlainItem(Item item) {
+        this.form = LootInjection.Form.PLAIN_ITEM;
+        this.item = item;
+        return this;
+    }
+
+    public LootInjectionBuilder asPlainItem(ItemLike item) {
+        return asPlainItem(item.asItem());
+    }
+
+    /** Merges the tag into the dropped stack's own tag. */
+    public LootInjectionBuilder withNbt(CompoundTag tag) {
+        if (tag != null && !tag.isEmpty()) {
+            this.functions.add(SetNbtFunction.setTag(tag));
+        }
+        return this;
+    }
+
+    public LootInjectionBuilder withFunction(LootItemFunction.Builder function) {
+        if (function != null) {
+            this.functions.add(function);
+        }
+        return this;
+    }
+
     public LootInjectionBuilder withEnchantments(String... enchantments) {
         return withEnchantments(new LinkedHashSet<>(Arrays.asList(enchantments)));
     }
@@ -96,14 +127,17 @@ public final class LootInjectionBuilder {
         if (this.targetTables.isEmpty()) {
             throw new IllegalStateException("[MerlinLib] a loot injection needs at least one target table");
         }
-        if (this.form != LootInjection.Form.RANDOM_BOOK && this.enchantments.isEmpty()) {
+        if (this.form != LootInjection.Form.RANDOM_BOOK && this.form != LootInjection.Form.PLAIN_ITEM
+                && this.enchantments.isEmpty()) {
             throw new IllegalStateException("[MerlinLib] a loot injection needs at least one enchantment");
         }
-        if (this.form == LootInjection.Form.ITEM && this.item == null) {
+        if ((this.form == LootInjection.Form.ITEM || this.form == LootInjection.Form.PLAIN_ITEM)
+                && this.item == null) {
             throw new IllegalStateException("[MerlinLib] an item loot injection needs the item to drop");
         }
         return new LootInjection(Set.copyOf(this.targetTables), this.form, this.item, Set.copyOf(this.enchantments),
-                clampChance(this.chance), Math.max(1, this.weight), this.quality, this.moddedTables);
+                clampChance(this.chance), Math.max(1, this.weight), this.quality, this.moddedTables,
+                List.copyOf(this.functions));
     }
 
     private static float clampChance(float chance) {
