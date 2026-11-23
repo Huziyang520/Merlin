@@ -1,45 +1,58 @@
+// Wiring of the configuration screens on Fabric: Forge Config API Port is the only provider now.
+
 package com.huziyang520.merlinlib.config;
 
 import com.huziyang520.merlinlib.Constants;
 import com.huziyang520.merlinlib.tools.ui.ConfigScreens;
+import fuzs.forgeconfigapiport.fabric.api.v5.ModConfigEvents;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 
-/**
- * Wiring of the optional configuration screens on Fabric.
- */
 public final class FabricConfig {
-
-    /** The class that proves Cloth Config is installed, asked for by name so nothing is linked. */
-    private static final String CLOTH_API = "me.shedaniel.clothconfig2.api.ConfigBuilder";
+    private static final String PORT_API = "fuzs.forgeconfigapiport.fabric.api.v5.ConfigRegistry";
+    private static boolean installed;
 
     private FabricConfig() {
     }
 
-    /**
-     * Installs the first available screen builder, and nothing when there is none.
-     *
-     * <p>Cloth Config and Jupiter both write through a {@link TomlBackend}, so the switches keep living in
-     * the one documented file no matter which screen is in use, and removing either mod loses nothing.
-     */
     public static boolean install() {
-        if (clothPresent()) {
-            ConfigManager.setBackend(new TomlBackend("cloth"));
-            ConfigScreens.install(ClothScreen::create);
-            Constants.LOG.info("[MerlinLib] Cloth Config API found: the configuration screen edits client.toml");
+        if (installed) {
             return true;
         }
-        if (JupiterUi.present()) {
-            JupiterUi.install();
-            return true;
+        installed = true;
+        if (!portPresent()) {
+            ConfigManager.setBackend(new TomlBackend("plain"));
+            Constants.LOG.info("[MerlinLib] Forge Config API Port is missing: client.toml is read directly and "
+                    + "/merlinlib config cannot open a screen");
+            return false;
         }
-        Constants.LOG.info("[MerlinLib] neither Cloth Config nor Jupiter is installed: client.toml is read "
-                + "directly and /merlinlib config cannot open a screen");
-        return false;
+        FcapConfigs.install();
+        // The port loads its files after the client entrypoint, so the old TOML is imported only once the
+        // spec is loaded; writing before that would move the file without carrying its values across.
+        ModConfigEvents.loading(Constants.MOD_ID).register(FabricConfig::adopt);
+        ModConfigEvents.reloading(Constants.MOD_ID).register(FabricConfig::adopt);
+        if (FcapConfigs.clientLoaded()) {
+            ConfigManager.setBackend(FcapConfigs.clientBackend());
+        }
+        if (FcapConfigs.commonLoaded()) {
+            ConfigManager.setServerBackend(FcapConfigs.commonBackend());
+        }
+        ConfigScreens.install(parent -> new ConfigurationScreen(Constants.MOD_ID, parent));
+        Constants.LOG.info("[MerlinLib] Forge Config API Port found: the configuration screen is the NeoForge one");
+        return true;
     }
 
-    /** @return whether Cloth Config is on the classpath */
-    private static boolean clothPresent() {
+    private static void adopt(ModConfig config) {
+        if (config.getType() == ModConfig.Type.CLIENT) {
+            ConfigManager.setBackend(FcapConfigs.clientBackend());
+        } else if (config.getType() == FcapConfigs.sharedType()) {
+            ConfigManager.setServerBackend(FcapConfigs.commonBackend());
+        }
+    }
+
+    private static boolean portPresent() {
         try {
-            Class.forName(CLOTH_API);
+            Class.forName(PORT_API);
             return true;
         } catch (ClassNotFoundException | LinkageError exception) {
             return false;
