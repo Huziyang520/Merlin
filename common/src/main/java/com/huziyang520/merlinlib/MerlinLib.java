@@ -2,6 +2,7 @@
 
 package com.huziyang520.merlinlib;
 
+import com.huziyang520.merlinlib.advancement.CustomTrigger;
 import com.huziyang520.merlinlib.config.ConfigManager;
 import com.huziyang520.merlinlib.config.NoticeSettings;
 import com.huziyang520.merlinlib.content.BuiltInContent;
@@ -41,6 +42,8 @@ public class MerlinLib {
         );
         Services.PACK.bootstrap(loaderContext);
         Services.REGISTRATIONS.bootstrap(loaderContext);
+        Services.REGISTRATIONS.register(net.minecraft.core.registries.BuiltInRegistries.TRIGGER_TYPES,
+                Identifier.fromNamespaceAndPath("merlinlib", "custom"), () -> CustomTrigger.INSTANCE);
         Services.LIFECYCLE.bootstrap(loaderContext);
         Services.LOOT.bootstrap(loaderContext);
         LootInjector.install();

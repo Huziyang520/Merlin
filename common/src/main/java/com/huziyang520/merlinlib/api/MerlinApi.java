@@ -94,4 +94,8 @@ public final class MerlinApi {
     public static CompatApi compat() {
         return CompatRegistry.INSTANCE;
     }
+
+    public static AdvancementApi advancements() {
+        return AdvancementApi.INSTANCE;
+    }
 }
