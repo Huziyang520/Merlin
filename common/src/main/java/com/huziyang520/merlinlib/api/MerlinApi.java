@@ -35,6 +35,10 @@ public final class MerlinApi {
         return CombatApi.INSTANCE;
     }
 
+    public static PlayerDeathApi playerDeath() {
+        return PlayerDeathApi.INSTANCE;
+    }
+
     public static TradeApi trades() {
         return TradeApi.INSTANCE;
     }

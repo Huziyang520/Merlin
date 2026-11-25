@@ -7,12 +7,18 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
+import java.lang.reflect.Method;
+import java.util.Locale;
 
 public final class TextApi {
     /** Default time for one full hue cycle, in milliseconds. */
     public static final long DEFAULT_PERIOD_MS = 5000L;
     /** Default hue distance between two neighbouring characters. */
     public static final float DEFAULT_HUE_STEP = 0.12F;
+
+    private static final String PINYIN_MATCH = "me.towdium.jecharacters.utils.Match";
+    private static Method pinyinContains;
+    private static boolean pinyinResolved;
 
     private static final TextApi INSTANCE = new TextApi();
 
@@ -61,6 +67,39 @@ public final class TextApi {
             default -> { red = 1.0F; green = 0.0F; blue = x; }
         }
         return pack(red, green, blue);
+    }
+
+    /** Pinyin / initial search with a plain case-insensitive fallback. */
+    public boolean pinyinMatches(String text, String needle) {
+        if (needle == null || needle.isEmpty()) {
+            return true;
+        }
+        String source = text == null ? "" : text;
+        Method method = pinyinContainsMethod();
+        if (method != null) {
+            try {
+                Object result = method.invoke(null, source, needle);
+                if (result instanceof Boolean matched) {
+                    return matched;
+                }
+            } catch (ReflectiveOperationException | RuntimeException ignored) {
+                // Fall through to the plain contains check.
+            }
+        }
+        return source.toLowerCase(Locale.ROOT).contains(needle.toLowerCase(Locale.ROOT));
+    }
+
+    private static synchronized Method pinyinContainsMethod() {
+        if (!pinyinResolved) {
+            pinyinResolved = true;
+            try {
+                pinyinContains = Class.forName(PINYIN_MATCH)
+                        .getMethod("contains", CharSequence.class, CharSequence.class);
+            } catch (ReflectiveOperationException | LinkageError ignored) {
+                pinyinContains = null;
+            }
+        }
+        return pinyinContains;
     }
 
     private static Component colorize(Component source, ColorPicker picker) {
